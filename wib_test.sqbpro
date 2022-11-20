@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/fox/Python/SQL/SQL Lite/WIB_test/wib_test.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="911"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,5:mainItems"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="Items" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="49"/><column index="2" value="40"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="Users" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="50"/><column index="2" value="40"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">WITH first_query AS (
+SELECT *
+FROM Purchases
+LEFT JOIN Users
+	ON Purchases.userId = Users.userId
+), 
+second_query AS (
+SELECT *
+FROM first_query
+LEFT JOIN Items
+	ON first_query.itemId = Items.itemId
+)
+SELECT strftime ('%Y''%m', date) AS 'Month and year', ROUND (AVG (price),2) AS 'Average Price'
+FROM second_query
+WHERE age &gt;= 18 AND age &lt;= 25
+GROUP BY 1
+ORDER BY 2 DESC;
+
+</sql><sql name="SQL 2">WITH first_query AS (
+SELECT *
+FROM Purchases
+LEFT JOIN Users
+	ON Purchases.userId = Users.userId
+), 
+second_query AS (
+SELECT *
+FROM first_query
+LEFT JOIN Items
+	ON first_query.itemId = Items.itemId
+)
+SELECT strftime ('%Y''%m', date) AS 'Month and year', ROUND (AVG (price),2) AS 'Average Price'
+FROM second_query
+WHERE age &gt;= 26 AND age &lt;= 35
+GROUP BY 1
+ORDER BY 2 DESC;
+
+</sql><sql name="SQL 3">WITH first_query AS (
+SELECT *
+FROM Purchases
+LEFT JOIN Users
+	ON Purchases.userId = Users.userId
+), 
+second_query AS (
+SELECT *
+FROM first_query
+LEFT JOIN Items
+	ON first_query.itemId = Items.itemId
+)
+SELECT strftime ('%Y''%m', date) AS 'Month and year', ROUND (SUM(price), 2) AS 'Total Revenue'
+FROM second_query
+WHERE age &gt;= 35
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 1;</sql><sql name="SQL 4">WITH first_query AS (
+SELECT *
+FROM Purchases
+LEFT JOIN Users
+	ON Purchases.userId = Users.userId
+), 
+second_query AS (
+SELECT *
+FROM first_query
+LEFT JOIN Items
+	ON first_query.itemId = Items.itemId
+)
+SELECT itemId, SUM (price) AS 'Total Revenue by Item', strftime ('%Y', date) AS year
+FROM second_query
+WHERE year = '2022'
+GROUP BY itemId
+ORDER BY 2 DESC
+LIMIT 1;
+</sql><sql name="SQL 5">WITH first_query AS (
+SELECT *
+FROM Purchases
+LEFT JOIN Users
+	ON Purchases.userId = Users.userId
+), 
+second_query AS (
+SELECT *
+FROM first_query
+LEFT JOIN Items
+	ON first_query.itemId = Items.itemId
+),
+third_query AS (
+SELECT itemId, ROUND(SUM (price), 2) AS total_revenue_by_item, strftime ('%Y', date) AS year
+FROM second_query
+WHERE year = '2021'
+GROUP BY itemId
+ORDER BY 2 DESC
+)
+SELECT itemId, total_revenue_by_item, ROUND(total_revenue_by_item * 100 / (SELECT SUM(total_revenue_by_item) AS sum FROM third_query), 2) AS share, year
+FROM third_query
+LIMIT 3;</sql><current_tab id="4"/></tab_sql></sqlb_project>
